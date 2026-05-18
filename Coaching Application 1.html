@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Koutz Performance — Online Fitness Coaching</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --k-bg: #0d0d0d; --k-surface: #161616; --k-card: #1c1c1c;
+      --k-white: #f5f4f0; --k-mid: #888; --k-dim: #444;
+      --k-accent: #C8FF00; --k-border: rgba(255,255,255,0.08);
+    }
+    html {
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--k-bg);
+      color: var(--k-white);
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 1px solid var(--k-border); position: sticky; top: 0; background: var(--k-bg); z-index: 100; }
+    .logo { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; }
+    .logo span { color: var(--k-accent); }
+    .nav-tag { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--k-mid); border: 1px solid rgba(255,255,255,0.12); padding: 5px 12px; border-radius: 20px; }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    .hero { padding: 2.5rem 1.25rem 2rem; text-align: center; }
+    .eyebrow { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--k-accent); font-weight: 500; margin-bottom: 1rem; }
+    .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 1; letter-spacing: 1px; margin-bottom: 1rem; }
+    .hero p { font-size: 15px; color: var(--k-mid); line-height: 1.7; margin-bottom: 2rem; font-weight: 300; }
+    .dual-cta { display: flex; flex-direction: column; gap: .75rem; width: 100%; }
+    .btn-primary { background: var(--k-accent); color: #0d0d0d; font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 2px; padding: 18px; border-radius: 8px; border: none; cursor: pointer; width: 100%; -webkit-tap-highlight-color: transparent; text-decoration: none; display: block; text-align: center; }
+    .btn-primary:active { opacity: .82; }
+    .btn-secondary { background: transparent; color: var(--k-white); font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 2px; padding: 17px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; width: 100%; -webkit-tap-highlight-color: transparent; }
+    .btn-secondary:active { border-color: var(--k-accent); color: var(--k-accent); }
+    .cta-note { font-size: 11px; color: var(--k-dim); text-align: center; }
+    .or-divider { display: flex; align-items: center; gap: .75rem; }
+    .or-line { flex: 1; height: 1px; background: var(--k-border); }
+    .or-txt { font-size: 11px; color: var(--k-dim); letter-spacing: 1px; }
+    .stats-bar { display: grid; grid-template-columns: repeat(3,1fr); border-top: 1px solid var(--k-border); border-bottom: 1px solid var(--k-border); background: var(--k-surface); }
+    .stat-item { padding: 1.1rem .5rem; text-align: center; border-right: 1px solid var(--k-border); }
+    .stat-item:last-child { border-right: none; }
+    .stat-n { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--k-accent); display: block; letter-spacing: 1px; }
+    .stat-l { font-size: 9px; color: var(--k-mid); letter-spacing: 1px; text-transform: uppercase; line-height: 1.3; }
+    .section { padding: 2rem 1.25rem 0; }
+    .sect-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--k-accent); font-weight: 500; margin-bottom: 1.1rem; text-align: center; }
+    .what-list { display: flex; flex-direction: column; gap: 1px; background: var(--k-border); border: 1px solid var(--k-border); border-radius: 10px; overflow: hidden; }
+    .what-item { background: var(--k-card); padding: 1.1rem 1.25rem; display: flex; align-items: flex-start; gap: 1rem; }
+    .what-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+    .what-title { font-size: 14px; font-weight: 500; margin-bottom: .25rem; }
+    .what-desc { font-size: 12px; color: var(--k-mid); line-height: 1.55; font-weight: 300; }
+    .how-list { display: flex; flex-direction: column; }
+    .how-step { display: flex; gap: 1rem; align-items: flex-start; padding: 1rem 0; border-bottom: 1px solid var(--k-border); }
+    .how-step:last-child { border-bottom: none; }
+    .how-num { font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: var(--k-accent); line-height: 1; flex-shrink: 0; width: 26px; }
+    .how-text-title { font-size: 14px; font-weight: 500; margin-bottom: .2rem; }
+    .how-text-desc { font-size: 12px; color: var(--k-mid); font-weight: 300; line-height: 1.55; }
+    .pricing-section { padding: 2rem 1.25rem 0; }
+    .pricing-stack { display: flex; flex-direction: column; gap: 1rem; }
+    .pkg-card { background: var(--k-card); border: 1px solid var(--k-border); border-radius: 12px; padding: 1.5rem; position: relative; }
+    .pkg-card.featured { border: 2px solid var(--k-accent); }
+    .pkg-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--k-accent); color: #0d0d0d; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 16px; border-radius: 20px; white-space: nowrap; }
+    .pkg-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: .6rem; }
+    .pkg-name { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--k-mid); font-weight: 500; }
+    .pkg-price { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: var(--k-white); letter-spacing: 1px; line-height: 1; }
+    .pkg-price span { font-size: 14px; font-family: 'DM Sans', sans-serif; color: var(--k-mid); font-weight: 300; }
+    .pkg-desc { font-size: 13px; color: var(--k-mid); margin: .5rem 0 1rem; line-height: 1.55; font-weight: 300; }
+    .pkg-features { list-style: none; margin-bottom: 1.25rem; }
+    .pkg-features li { font-size: 13px; color: var(--k-mid); padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; font-weight: 300; }
+    .pkg-features li:last-child { border-bottom: none; }
+    .check { width: 16px; height: 16px; border-radius: 50%; background: rgba(200,255,0,0.1); border: 1px solid rgba(200,255,0,0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 9px; color: var(--k-accent); }
+    .pkg-btn { width: 100%; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: var(--k-white); font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 2px; padding: 16px; border-radius: 8px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .pkg-btn:active { border-color: var(--k-accent); color: var(--k-accent); }
+    .pkg-btn.primary { background: var(--k-accent); color: #0d0d0d; border: none; }
+    .pkg-btn.primary:active { opacity: .82; }
+    .bottom-band { margin: 2rem 1.25rem; background: var(--k-surface); border: 1px solid var(--k-border); border-radius: 12px; padding: 1.75rem 1.25rem; text-align: center; }
+    .bottom-band h2 { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1px; margin-bottom: .5rem; }
+    .bottom-band p { font-size: 13px; color: var(--k-mid); font-weight: 300; margin-bottom: 1.25rem; line-height: 1.6; }
+    .form-head { text-align: center; padding: 2.5rem 1.25rem 1.5rem; }
+    .form-head h2 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 1px; margin-bottom: .4rem; }
+    .form-head p { font-size: 13px; color: var(--k-mid); font-weight: 300; }
+    .form-wrap { padding: 0 1.25rem 3rem; }
+    .pkg-bar { background: var(--k-surface); border: 1px solid var(--k-border); border-radius: 8px; padding: .9rem 1.1rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; }
+    .pkg-bar-label { font-size: 10px; color: var(--k-mid); text-transform: uppercase; letter-spacing: 1px; }
+    .pkg-bar-val { font-size: 13px; font-weight: 500; color: var(--k-accent); }
+    .form-label { display: block; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--k-mid); margin-bottom: 6px; font-weight: 500; }
+    .form-row { margin-bottom: 1rem; }
+    .fi {
+      width: 100%;
+      background: var(--k-surface);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: var(--k-white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      padding: 14px;
+      outline: none;
+      transition: border-color .2s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .fi:focus { border-color: var(--k-accent); }
+    .fi option { background: #1a1a1a; }
+    textarea.fi { resize: vertical; min-height: 90px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { padding: 10px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.12); font-size: 13px; font-weight: 500; color: var(--k-mid); cursor: pointer; background: transparent; font-family: 'DM Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+    .chip.on { border-color: var(--k-accent); color: var(--k-accent); background: rgba(200,255,0,0.06); }
+    .submit-btn { width: 100%; background: var(--k-accent); color: #0d0d0d; font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; border: none; border-radius: 8px; padding: 18px; cursor: pointer; margin-top: 1.25rem; -webkit-tap-highlight-color: transparent; }
+    .submit-btn:active { opacity: .82; }
+    .submit-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .privacy-note { text-align: center; font-size: 11px; color: var(--k-dim); margin-top: .75rem; }
+    .back-link { text-align: center; margin-top: 1rem; font-size: 13px; color: var(--k-mid); cursor: pointer; text-decoration: underline; padding: .5rem; display: block; }
+    .error-msg { color: #ff6b6b; font-size: 12px; margin-top: .5rem; display: none; }
+    .ty-wrap { padding: 3.5rem 1.25rem 3rem; text-align: center; }
+    .ty-icon { width: 68px; height: 68px; border-radius: 50%; background: rgba(200,255,0,0.08); border: 1px solid rgba(200,255,0,0.25); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 26px; color: var(--k-accent); }
+    .ty h2 { font-family: 'Bebas Neue', sans-serif; font-size: 44px; letter-spacing: 1px; margin-bottom: .6rem; }
+    .ty p { font-size: 15px; color: var(--k-mid); line-height: 1.7; margin-bottom: 2rem; font-weight: 300; }
+    .steps-stack { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 2rem; }
+    .step-box { background: var(--k-surface); border: 1px solid var(--k-border); border-radius: 8px; padding: .9rem 1.1rem; display: flex; align-items: center; gap: 1rem; text-align: left; }
+    .step-num { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--k-accent); flex-shrink: 0; line-height: 1; }
+    .step-txt { font-size: 13px; color: var(--k-mid); font-weight: 300; }
+    .book-btn { display: block; width: 100%; background: var(--k-accent); color: #0d0d0d; font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; padding: 18px; border-radius: 8px; cursor: pointer; border: none; margin-bottom: .75rem; text-decoration: none; text-align: center; -webkit-tap-highlight-color: transparent; }
+    .book-btn:active { opacity: .82; }
+    .book-sub { font-size: 12px; color: var(--k-dim); }
+    .footer { border-top: 1px solid var(--k-border); padding: 1.25rem; text-align: center; font-size: 10px; color: rgba(136,136,136,0.4); letter-spacing: 1px; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="logo">KOUTZ<span>.</span>PERFORMANCE</div>
+    <div class="nav-tag">Science-Based</div>
+  </nav>
+
+  <!-- SCREEN 1: LANDING -->
+  <div class="screen active" id="s1">
+    <div class="hero">
+      <div class="eyebrow">Online Fitness Coaching</div>
+      <h1>BUILD THE BODY.<br>KEEP THE RESULTS.</h1>
+      <p>Personalized training, precision nutrition, and weekly video check-ins — built on science, designed around you.</p>
+      <div class="dual-cta">
+        <button class="btn-primary" onclick="goToForm('Free Discovery Call')">BOOK A FREE DISCOVERY CALL</button>
+        <div class="cta-note">15 min · No commitment · Spots limited</div>
+        <div class="or-divider"><div class="or-line"></div><span class="or-txt">OR</span><div class="or-line"></div></div>
+        <button class="btn-secondary" onclick="document.getElementById('pricing-section').scrollIntoView({behavior:'smooth'})">VIEW PLANS & PRICING ↓</button>
+      </div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-item"><span class="stat-n">100%</span><span class="stat-l">Personalized</span></div>
+      <div class="stat-item"><span class="stat-n">Weekly</span><span class="stat-l">Video Check-Ins</span></div>
+      <div class="stat-item"><span class="stat-n">Diet +<br>Training</span><span class="stat-l">Full Coverage</span></div>
+    </div>
+
+    <div class="section">
+      <div class="sect-label">What's Included</div>
+      <div class="what-list">
+        <div class="what-item"><span class="what-icon">🏋️</span><div><div class="what-title">Custom Training Program</div><div class="what-desc">Built around your schedule, equipment, and goals — updated as you progress.</div></div></div>
+        <div class="what-item"><span class="what-icon">🥗</span><div><div class="what-title">Nutrition Planning</div><div class="what-desc">Science-backed diet structure — macros, meals, and real food you enjoy.</div></div></div>
+        <div class="what-item"><span class="what-icon">📹</span><div><div class="what-title">Weekly Video Check-Ins</div><div class="what-desc">Face-to-face accountability every week to track progress and adjust.</div></div></div>
+        <div class="what-item"><span class="what-icon">📊</span><div><div class="what-title">Data-Driven Adjustments</div><div class="what-desc">Your plan evolves with you. No plateaus — just consistent, measurable progress.</div></div></div>
+      </div>
+    </div>
+
+    <div class="section" style="padding-bottom:0;">
+      <div class="sect-label">How It Works</div>
+      <div class="how-list">
+        <div class="how-step"><div class="how-num">1</div><div><div class="how-text-title">Fill out your intake form</div><div class="how-text-desc">Tell us your goals, experience, and schedule. Under 2 minutes.</div></div></div>
+        <div class="how-step"><div class="how-num">2</div><div><div class="how-text-title">Book your free discovery call</div><div class="how-text-desc">15-min call to see if we're a good fit and answer your questions.</div></div></div>
+        <div class="how-step"><div class="how-num">3</div><div><div class="how-text-title">Get your custom program</div><div class="how-text-desc">Training and nutrition plan built and delivered — ready to start.</div></div></div>
+        <div class="how-step"><div class="how-num">4</div><div><div class="how-text-title">Weekly check-ins & support</div><div class="how-text-desc">Progress tracked every week, plan adjusted, accountability maintained.</div></div></div>
+      </div>
+    </div>
+
+    <div class="pricing-section" id="pricing-section">
+      <div class="sect-label" style="margin-top:2rem;">Plans & Pricing</div>
+      <p style="text-align:center;font-size:12px;color:var(--k-dim);margin-bottom:1.25rem;">No contracts · Cancel anytime · Free call included</p>
+      <div class="pricing-stack">
+        <div class="pkg-card">
+          <div class="pkg-header"><div class="pkg-name">Essential</div><div class="pkg-price">$149<span>/mo</span></div></div>
+          <div class="pkg-desc">Perfect for beginners ready to build smart habits and see real results.</div>
+          <ul class="pkg-features">
+            <li><div class="check">&#10003;</div>Custom training program</li>
+            <li><div class="check">&#10003;</div>Macro &amp; calorie targets</li>
+            <li><div class="check">&#10003;</div>Weekly video check-in</li>
+            <li><div class="check">&#10003;</div>Monthly program update</li>
+            <li><div class="check">&#10003;</div>Client portal access</li>
+          </ul>
+          <button class="pkg-btn" onclick="goToForm('Essential — $149/mo')">GET STARTED</button>
+        </div>
+        <div class="pkg-card featured">
+          <div class="pkg-badge">Most Popular</div>
+          <div class="pkg-header" style="margin-top:.5rem;"><div class="pkg-name">Elite</div><div class="pkg-price">$249<span>/mo</span></div></div>
+          <div class="pkg-desc">Full-service coaching for serious results — training, nutrition, and direct access.</div>
+          <ul class="pkg-features">
+            <li><div class="check">&#10003;</div>Everything in Essential</li>
+            <li><div class="check">&#10003;</div>Full meal plan &amp; recipes</li>
+            <li><div class="check">&#10003;</div>Weekly video check-in</li>
+            <li><div class="check">&#10003;</div>Bi-weekly program updates</li>
+            <li><div class="check">&#10003;</div>Direct messaging access</li>
+            <li><div class="check">&#10003;</div>Supplement guidance</li>
+          </ul>
+          <button class="pkg-btn primary" onclick="goToForm('Elite — $249/mo')">GET STARTED</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-band">
+      <h2>NOT SURE WHERE TO START?</h2>
+      <p>Book a free 15-min call. We'll talk goals, answer questions, and find the right fit — no pressure.</p>
+      <button class="btn-primary" onclick="goToForm('Free Discovery Call')">BOOK A FREE CALL</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: INTAKE FORM -->
+  <div class="screen" id="s2">
+    <div class="form-head">
+      <h2>TELL US ABOUT YOU</h2>
+      <p>Takes 2 minutes — we'll build everything around your answers.</p>
+    </div>
+    <div class="form-wrap">
+      <div class="pkg-bar">
+        <span class="pkg-bar-label">Selected</span>
+        <span class="pkg-bar-val" id="pkgDisplay">—</span>
+      </div>
+      <div class="form-row"><label class="form-label">First name *</label><input class="fi" type="text" id="fn" placeholder="Alex" autocomplete="given-name" /></div>
+      <div class="form-row"><label class="form-label">Last name</label><input class="fi" type="text" id="ln" placeholder="Smith" autocomplete="family-name" /></div>
+      <div class="form-row"><label class="form-label">Email address *</label><input class="fi" type="email" id="em" placeholder="alex@email.com" autocomplete="email" inputmode="email" /></div>
+      <div class="form-row"><label class="form-label">Phone number</label><input class="fi" type="tel" id="ph" placeholder="(555) 000-0000" autocomplete="tel" inputmode="tel" /></div>
+      <div class="form-row">
+        <label class="form-label">Primary goals — tap all that apply</label>
+        <div class="chips">
+          <button type="button" class="chip" onclick="this.classList.toggle('on')">Lose weight</button>
+          <button type="button" class="chip" onclick="this.classList.toggle('on')">Build muscle</button>
+          <button type="button" class="chip" onclick="this.classList.toggle('on')">Body recomp</button>
+          <button type="button" class="chip" onclick="this.classList.toggle('on')">Improve fitness</button>
+          <button type="button" class="chip" onclick="this.classList.toggle('on')">Gain strength</button>
+          <button type="button" class="chip" onclick="this.classList.toggle('on')">Boost energy</button>
+        </div>
+      </div>
+      <div class="form-row"><label class="form-label">Training days / week</label>
+        <select class="fi" id="days"><option value="">Select...</option><option>2–3 days</option><option>4–5 days</option><option>6+ days</option></select>
+      </div>
+      <div class="form-row"><label class="form-label">Where you train</label>
+        <select class="fi" id="gym"><option value="">Select...</option><option>Commercial gym</option><option>Home gym</option><option>Both</option><option>No equipment</option></select>
+      </div>
+      <div class="form-row"><label class="form-label">Experience level</label>
+        <select class="fi" id="exp"><option value="">Select...</option><option>Complete beginner</option><option>Some experience (under 1 yr)</option><option>Intermediate (1–3 yrs)</option><option>Advanced (3+ yrs)</option></select>
+      </div>
+      <div class="form-row"><label class="form-label">Anything else we should know? (optional)</label>
+        <textarea class="fi" id="notes" placeholder="Injuries, time constraints, past experience..."></textarea>
+      </div>
+      <div class="error-msg" id="errMsg">Please fill in your name and email to continue.</div>
+      <button type="button" class="submit-btn" id="submitBtn" onclick="handleSubmit()">SUBMIT & BOOK MY CALL →</button>
+      <p class="privacy-note">No spam. Your info is sent directly to your coach.</p>
+      <a class="back-link" onclick="goBack()">← Go back</a>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: THANK YOU -->
+  <div class="screen" id="s3">
+    <div class="ty-wrap">
+      <div class="ty-icon">&#10003;</div>
+      <div class="ty">
+        <h2>YOU'RE IN.</h2>
+        <p>Application received! One last step — book your free 15-minute discovery call below so we can go over everything together.</p>
+      </div>
+      <div class="steps-stack">
+        <div class="step-box"><span class="step-num">1</span><div class="step-txt">Intake form completed ✓</div></div>
+        <div class="step-box"><span class="step-num">2</span><div class="step-txt">Book your free 15-min call</div></div>
+        <div class="step-box"><span class="step-num">3</span><div class="step-txt">Get your custom program</div></div>
+      </div>
+      <a class="book-btn" href="https://calendly.com/ckoutzis/15min" target="_blank">BOOK YOUR FREE CALL →</a>
+      <div class="book-sub">15 min · No pressure · No commitment</div>
+    </div>
+  </div>
+
+  <div class="footer">&#169; 2026 Koutz Performance &middot; All rights reserved</div>
+
+  <script>
+    var selectedPkg = '';
+
+    function goToForm(pkg) {
+      selectedPkg = pkg;
+      document.getElementById('pkgDisplay').textContent = pkg;
+      document.getElementById('s1').classList.remove('active');
+      document.getElementById('s2').classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function goBack() {
+      document.getElementById('s2').classList.remove('active');
+      document.getElementById('s1').classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    async function handleSubmit() {
+      var fn = document.getElementById('fn').value.trim();
+      var em = document.getElementById('em').value.trim();
+      var errMsg = document.getElementById('errMsg');
+      var submitBtn = document.getElementById('submitBtn');
+
+      if (!fn || !em) {
+        if (!fn) document.getElementById('fn').style.borderColor = '#C8FF00';
+        if (!em) document.getElementById('em').style.borderColor = '#C8FF00';
+        errMsg.style.display = 'block';
+        return;
+      }
+      errMsg.style.display = 'none';
+
+      var goals = [];
+      document.querySelectorAll('.chip.on').forEach(function(c) { goals.push(c.textContent); });
+
+      var formData = {
+        'Selected Plan': selectedPkg,
+        'First Name': fn,
+        'Last Name': document.getElementById('ln').value.trim(),
+        'Email': em,
+        'Phone': document.getElementById('ph').value.trim(),
+        'Goals': goals.length ? goals.join(', ') : 'Not selected',
+        'Training Days': document.getElementById('days').value || 'Not selected',
+        'Gym Location': document.getElementById('gym').value || 'Not selected',
+        'Experience Level': document.getElementById('exp').value || 'Not selected',
+        'Additional Notes': document.getElementById('notes').value.trim() || 'None'
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'SENDING...';
+
+      try {
+        var response = await fetch('https://formspree.io/f/xgodzawd', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+          document.getElementById('s2').classList.remove('active');
+          document.getElementById('s3').classList.add('active');
+          window.scrollTo(0, 0);
+        } else {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'SUBMIT & BOOK MY CALL →';
+          errMsg.textContent = 'Something went wrong. Please try again.';
+          errMsg.style.display = 'block';
+        }
+      } catch(e) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'SUBMIT & BOOK MY CALL →';
+        errMsg.textContent = 'Network error. Please check your connection and try again.';
+        errMsg.style.display = 'block';
+      }
+    }
+  </script>
+
+</body>
+</html>
